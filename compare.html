@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Price Forecast - EMD-BPNN Hybrid Model</title>
+    <!-- Include Plotly.js for rendering charts -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #1a237e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #3f51b5;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #1a237e;
+        }
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .metrics-table th, .metrics-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .metrics-table th {
+            background-color: #3f51b5;
+            color: white;
+        }
+        .model-insight {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e8eaf6;
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #1a237e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Oil Price Forecast</h1>
+        <p>EMD-BPNN Hybrid Model</p>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('generate_data') }}">Generate Data</a>
+        <a href="{{ url_for('upload_file') }}">Upload Data</a>
+        <a href="{{ url_for('decompose') }}">Decompose</a>
+        <a href="{{ url_for('train') }}">Train Model</a>
+        <a href="{{ url_for('forecast') }}">Forecast</a>
+        <a href="{{ url_for('compare') }}">Compare</a>
+    </nav>
+
+    <div class="container">
+        <div class="section">
+            <h2>Model Comparison</h2>
+            <p>Compare performance metrics between different forecasting models</p>
+
+            <div>
+                <h3>Performance Metrics Comparison</h3>
+                <div id="comparisonChart"></div>
+                <script>
+                    var comparisonData = {{ comparisonJSON|safe }};
+                    Plotly.newPlot('comparisonChart', comparisonData.data, comparisonData.layout);
+                </script>
+            </div>
+
+            <div>
+                <h3>Detailed Metrics</h3>
+                <table class="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>RMSE</th>
+                            <th>MAPE (%)</th>
+                            <th>Direction Accuracy (%)</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for model in models %}
+                        <tr>
+                            <td>{{ model.name }}</td>
+                            <td>{{ model.rmse|round(4) }}</td>
+                            <td>{{ model.mape|round(2) }}</td>
+                            <td>{{ model.ds|round(2) }}</td>
+                            <td>
+                                {% if model.rmse == models|map(attribute='rmse')|min %}
+                                Overall Accuracy
+                                {% elif model.ds == models|map(attribute='ds')|max %}
+                                Direction Prediction
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Model Insights</h3>
+            <div class="model-insight">
+                <h4>BPNN Model</h4>
+                <p>Standard backpropagation neural network that processes the raw time series data directly. Simple but effective for short-term forecasting.</p>
+                <ul>
+                    <li>Simple architecture</li>
+                    <li>Faster training time</li>
+                    <li>Better for stable market conditions</li>
+                </ul>
+            </div>
+
+            <div class="model-insight">
+                <h4>EMD-BPNN Model</h4>
+                <p>Hybrid model that decomposes the time series into components first, then applies separate neural networks to each component.</p>
+                <ul>
+                    <li>Advanced component modeling</li>
+                    <li>Better handles market volatility</li>
+                    <li>Superior for complex price patterns</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Understanding Performance Metrics</h3>
+            <p>The models are evaluated using several key metrics:</p>
+            <ul>
+                <li><strong>RMSE (Root Mean Square Error):</strong> Measures the average magnitude of forecast errors. Lower values indicate better accuracy.</li>
+                <li><strong>MAPE (Mean Absolute Percentage Error):</strong> Expresses error as a percentage of the actual values. Lower values indicate better accuracy.</li>
+                <li><strong>Direction Accuracy (%):</strong> The percentage of times the model correctly predicts the price movement direction. Higher values indicate better trend forecasting.</li>
+            </ul>
+            <p>For oil price forecasting, direction accuracy is often considered the most important metric for trading applications, while RMSE and MAPE are crucial for budget planning and risk management.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Oil Price Forecasting System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Price Forecast - EMD-BPNN Hybrid Model</title>
+    <!-- Include Plotly.js for rendering charts -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #1a237e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #3f51b5;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #1a237e;
+        }
+        .forecast-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .forecast-table th, .forecast-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .forecast-table th {
+            background-color: #3f51b5;
+            color: white;
+        }
+        .button {
+            background-color: #3f51b5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        .button:hover {
+            background-color: #303f9f;
+        }
+        footer {
+            background-color: #1a237e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Oil Price Forecast</h1>
+        <p>EMD-BPNN Hybrid Model</p>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('generate_data') }}">Generate Data</a>
+        <a href="{{ url_for('upload_file') }}">Upload Data</a>
+        <a href="{{ url_for('decompose') }}">Decompose</a>
+        <a href="{{ url_for('train') }}">Train Model</a>
+        <a href="{{ url_for('forecast') }}">Forecast</a>
+        <a href="{{ url_for('compare') }}">Compare</a>
+    </nav>
+
+    <div class="container">
+        <div class="section">
+            <h2>Price Forecasting</h2>
+            <p>Generate future oil price predictions</p>
+
+            {% if not forecastJSON %}
+            <form method="POST">
+                <div>
+                    <label for="model_name">Select Model</label><br>
+                    <select id="model_name" name="model_name" required>
+                        {% for model in models %}
+                        <option value="{{ model }}">{{ model|upper }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="forecast_days">Forecast Horizon (Days)</label><br>
+                    <input type="number" id="forecast_days" name="forecast_days" value="30" min="1" required>
+                </div>
+
+                <div>
+                    <button type="submit" class="button">Generate Forecast</button>
+                </div>
+            </form>
+
+            <div class="section">
+                <h3>About Price Forecasting</h3>
+                <p>The forecasting process uses your trained model to predict future oil prices based on the historical patterns identified during training.</p>
+                <p><strong>Important considerations:</strong></p>
+                <ul>
+                    <li>Longer forecast horizons generally have increasing uncertainty</li>
+                    <li>The EMD-BPNN model typically outperforms standard BPNN for longer horizons</li>
+                    <li>Market shocks and external events cannot be anticipated by the model</li>
+                </ul>
+                <p>For optimal results, regularly update your model with new data.</p>
+            </div>
+            {% else %}
+            <div>
+                <h3>{{ model_name }} Price Forecast</h3>
+                <div id="forecastChart"></div>
+                <script>
+                    var forecastData = {{ forecastJSON|safe }};
+                    Plotly.newPlot('forecastChart', forecastData.data, forecastData.layout);
+                </script>
+            </div>
+
+            <div>
+                <h3>Forecast Values</h3>
+                <table class="forecast-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Forecasted Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date, value in zip(forecast_dates, forecast_values) %}
+                        <tr>
+                            <td>{{ date }}</td>
+                            <td>{{ value|round(2) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <a href="{{ url_for('forecast') }}" class="button">New Forecast</a>
+                <a href="{{ url_for('compare') }}" class="button">Compare Models</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Oil Price Forecasting System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

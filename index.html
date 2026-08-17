@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Price Forecasting System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Oil Price Forecast</h1>
+            <p>EMD-BPNN Hybrid Model</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+                <li><a href="{{ url_for('generate_data') }}">Generate Data</a></li>
+                <li><a href="{{ url_for('upload_file') }}">Upload Data</a></li>
+                <li><a href="{{ url_for('decompose') }}">Decompose</a></li>
+                <li><a href="{{ url_for('train') }}">Train Model</a></li>
+                <li><a href="{{ url_for('forecast') }}">Forecast</a></li>
+                <li><a href="{{ url_for('compare') }}">Compare</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Advanced Oil Price Forecasting</h2>
+                <p>Using Empirical Mode Decomposition and Back Propagation Neural Networks</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('upload_file') }}" class="btn btn-primary">Upload Data</a>
+                    <a href="{{ url_for('generate_data') }}" class="btn btn-secondary">Generate Sample Data</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="image-placeholder">
+                    <img src="{{ url_for('static', filename='img/chart.svg') }}" alt="Oil price chart">
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>System Features</h2>
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-icon data-icon"></div>
+                    <h3>Data Management</h3>
+                    <p>Upload your own oil price data or generate synthetic data for analysis</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon emd-icon"></div>
+                    <h3>EMD Analysis</h3>
+                    <p>Decompose time series into Intrinsic Mode Functions (IMFs) to isolate features</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon model-icon"></div>
+                    <h3>Neural Networks</h3>
+                    <p>Train advanced BPNN models on raw data or EMD components</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon forecast-icon"></div>
+                    <h3>Price Forecasting</h3>
+                    <p>Generate accurate forecasts for future oil price movements</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow">
+            <h2>How It Works</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Upload Data</h3>
+                        <p>Upload your historical oil price data in CSV format</p>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>EMD Decomposition</h3>
+                        <p>Break down the time series into component oscillations</p>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Model Training</h3>
+                        <p>Train BPNN models on raw data or EMD components</p>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Generate Forecast</h3>
+                        <p>Predict future oil prices with your trained model</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about">
+            <h2>About The Technology</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>EMD-BPNN Hybrid Model</h3>
+                    <p>This system combines Empirical Mode Decomposition (EMD) with Back Propagation Neural Networks (BPNN) to create a powerful hybrid forecasting model. By decomposing complex oil price data into simpler components, the system can identify both high-frequency market fluctuations and long-term trends.</p>
+                    <p>The EMD-BPNN approach has demonstrated superior accuracy compared to traditional forecasting methods, with improved performance in both directional accuracy and error metrics.</p>
+                </div>
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <img src="{{ url_for('static', filename='img/neural.svg') }}" alt="Neural network illustration">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>Oil Price Forecast</h2>
+                <p>EMD-BPNN Hybrid Model</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('generate_data') }}">Generate Data</a></li>
+                    <li><a href="{{ url_for('upload_file') }}">Upload Data</a></li>
+                    <li><a href="{{ url_for('decompose') }}">Decompose</a></li>
+                    <li><a href="{{ url_for('train') }}">Train Model</a></li>
+                    <li><a href="{{ url_for('forecast') }}">Forecast</a></li>
+                    <li><a href="{{ url_for('compare') }}">Compare</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Oil Price Forecasting System. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

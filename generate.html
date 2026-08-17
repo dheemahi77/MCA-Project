@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Data - Oil Price Forecasting System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Oil Price Forecast</h1>
+            <p>EMD-BPNN Hybrid Model</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('generate_data') }}" class="active">Generate Data</a></li>
+                <li><a href="{{ url_for('upload_file') }}">Upload Data</a></li>
+                <li><a href="{{ url_for('decompose') }}">Decompose</a></li>
+                <li><a href="{{ url_for('train') }}">Train Model</a></li>
+                <li><a href="{{ url_for('forecast') }}">Forecast</a></li>
+                <li><a href="{{ url_for('compare') }}">Compare</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h2>Generate Synthetic Data</h2>
+            <p>Create synthetic oil price data for testing and demonstration</p>
+        </section>
+
+        <section class="content-section">
+            <div class="form-container">
+                <form method="POST" action="{{ url_for('generate_data') }}">
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" name="start_date" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date" name="end_date" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="volatility">Volatility (0.01 - 0.5)</label>
+                        <input type="range" id="volatility" name="volatility" min="0.01" max="0.5" step="0.01" value="0.1" class="form-control range-slider">
+                        <span class="range-value" id="volatility-value">0.1</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="trend">Trend (-0.1 - 0.1)</label>
+                        <input type="range" id="trend" name="trend" min="-0.1" max="0.1" step="0.01" value="0.01" class="form-control range-slider">
+                        <span class="range-value" id="trend-value">0.01</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Generate Data</button>
+                    </div>
+                </form>
+            </div>
+
+            {% if graphJSON %}
+            <div class="results-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Generated Data</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="chart" class="chart-container"></div>
+                    </div>
+                    <div class="card-footer">
+                        <p>File saved as: <span class="highlight">{{ filename }}</span></p>
+                        <a href="{{ url_for('upload_file') }}" class="btn btn-secondary">Proceed to Upload</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="info-section">
+            <div class="info-card">
+                <h3>About Synthetic Data Generation</h3>
+                <p>This tool creates realistic synthetic oil price data with configurable parameters:</p>
+                <ul>
+                    <li><strong>Start/End Date:</strong> The time period for the generated data</li>
+                    <li><strong>Volatility:</strong> Controls the day-to-day price variability</li>
+                    <li><strong>Trend:</strong> Sets the overall upward or downward price direction</li>
+                </ul>
+                <p>The generated data follows a geometric Brownian motion model with the specified parameters, creating realistic price movements that mimic real market behavior.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>Oil Price Forecast</h2>
+                <p>EMD-BPNN Hybrid Model</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('generate_data') }}">Generate Data</a></li>
+                    <li><a href="{{ url_for('upload_file') }}">Upload Data</a></li>
+                    <li><a href="{{ url_for('decompose') }}">Decompose</a></li>
+                    <li><a href="{{ url_for('train') }}">Train Model</a></li>
+                    <li><a href="{{ url_for('forecast') }}">Forecast</a></li>
+                    <li><a href="{{ url_for('compare') }}">Compare</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Oil Price Forecasting System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Update the value display when slider changes
+        document.getElementById('volatility').addEventListener('input', function() {
+            document.getElementById('volatility-value').textContent = this.value;
+        });
+        
+        document.getElementById('trend').addEventListener('input', function() {
+            document.getElementById('trend-value').textContent = this.value;
+        });
+        
+        {% if graphJSON %}
+        // Render the chart if data exists
+        var chartData = {{ graphJSON | safe }};
+        Plotly.newPlot('chart', chartData.data, chartData.layout);
+        {% endif %}
+    </script>
+</body>
+</html>
